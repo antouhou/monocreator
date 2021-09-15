@@ -15,11 +15,24 @@ async function prepareRepositories() {
 
 }
 
+async function prepareProjectDirectory() {
+  await project.removeProjectDir();
+  await project.createDirectory();
+  await project.copyTemplates();
+
+  await project.installNodeModules();
+
+  await project.initializeGit();
+  await project.commitFiles();
+
+  return project.getPath();
+}
+
 async function main() {
-  const monorepoPath = await project.createDirectory();
+  const projectPath = await prepareProjectDirectory();
 
 
-  await prepareRepositories();
+  //await prepareRepositories();
 }
 
 main().catch(e => {
