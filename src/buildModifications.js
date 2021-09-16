@@ -116,7 +116,34 @@ COPY --from=node_modules /platform/packages/js-drive/node_modules/ ./node_module
   fs.writeFileSync(driveDockerfilePath + '.old', driveDockerfile);
 }
 
-async function fixDashmateDockerCompose() {}
+async function fixDashmateDockerCompose() {
+  console.log('Fixing dashmate docker-compose.yml');
+  const dockerComposeDapiPath = `${packagesPath}/dashmate/docker-compose.platform.build-dapi.yml`;
+  const dockerComposeDapiFile = fs.readFileSync(dockerComposeDapiPath, { encoding: "utf-8" });
+  let newFile = dockerComposeDapiFile;
+
+  // There are two occurrences
+  for (let i = 0; i < 2; i++) {
+    newFile = newFile
+      .replace("build: ${PLATFORM_DAPI_API_DOCKER_BUILD_PATH:?err}", "build:\n" +
+        "      context: ../../\n" +
+        "      dockerfile: ${PLATFORM_DAPI_API_DOCKER_BUILD_PATH:?err}/Dockerfile");
+  }
+
+  fs.writeFileSync(dockerComposeDapiPath, newFile);
+  fs.writeFileSync(dockerComposeDapiPath + '.old', dockerComposeDapiFile);
+
+  const dockerComposeDrivePath = `${packagesPath}/dashmate/docker-compose.platform.build-drive.yml`;
+  const dockerComposeDriveFile = fs.readFileSync(dockerComposeDrivePath, { encoding: "utf-8" });
+
+  let newDriveFile = dockerComposeDriveFile
+    .replace("build: ${PLATFORM_DRIVE_ABCI_DOCKER_BUILD_PATH:?err}", "build:\n" +
+      "      context: ../../\n" +
+      "      dockerfile: ${PLATFORM_DRIVE_ABCI_DOCKER_BUILD_PATH:?err}/Dockerfile");
+
+  fs.writeFileSync(dockerComposeDrivePath, newDriveFile);
+  fs.writeFileSync(dockerComposeDrivePath + '.old', dockerComposeDriveFile);
+}
 
 // Those two seems to be working so far
 async function fixGrpcCommonBuild() {}
