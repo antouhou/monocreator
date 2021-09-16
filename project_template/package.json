@@ -20,18 +20,6 @@
     "lerna": "3.22.1"
   },
   "workspaces": [
-    "packages/dapi",
-    "packages/dapi-client",
-    "packages/dapi-grpc",
-    "packages/dashmate",
-    "packages/dpns-contract",
-    "packages/drive",
-    "packages/feature-flags-contract",
-    "packages/js-abci",
-    "packages/js-dash-sdk",
-    "packages/js-dpp",
-    "packages/js-grpc-common",
-    "packages/platform-test-suite",
-    "packages/wallet-lib"
+    "packages/*"
   ]
 }

@@ -1,10 +1,12 @@
 const project = require('./projectStructure');
 const repositories = require('./repositories');
+const buildModifications = require('./buildModifications');
 
-async function prepareRepositories() {
+async function prepareRepositories(projectPath) {
   try {
+    await repositories.cleanup();
     await repositories.clone();
-    await repositories.import();
+    await repositories.import(projectPath);
     await repositories.cleanup();
   } catch (e) {
     console.log('Error happened while preparing repositories, reverting');
@@ -20,19 +22,41 @@ async function prepareProjectDirectory() {
   await project.createDirectory();
   await project.copyTemplates();
 
+  // To install lerna. There's also a separate install
+  // after the project was initialized
   await project.installNodeModules();
 
   await project.initializeGit();
   await project.commitFiles();
-
-  return project.getPath();
 }
 
+const skipProjectCreation = false;
+
 async function main() {
-  const projectPath = await prepareProjectDirectory();
+  const projectPath = project.getPath();
 
+  if (!skipProjectCreation) {
+    await prepareProjectDirectory();
+    await prepareRepositories(projectPath);
+  }
 
-  //await prepareRepositories();
+  buildModifications.init(projectPath);
+  // By that point the repository has been initialized, can do modifications to build files
+
+  await buildModifications.fixSDKBuild();
+
+  // Fixing docker-related stuff in dapi, drive and dashmate
+  await buildModifications.fixDapiDockerfile();
+  await buildModifications.fixDriveDockerfile();
+  await buildModifications.fixDashmateDockerCompose()
+
+  // After the modification to build files were done, can install node modules. This is needed
+  // because otherwise npm i for the SDK won't work, as there will be no build of grpc for example
+  await project.installNodeModules();
+
+  await project.build();
+
+  console.log("The multi package repo has been successfully created");
 }
 
 main().catch(e => {

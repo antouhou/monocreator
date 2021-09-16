@@ -1,3 +1,4 @@
+const path = require('path');
 const exec = require('./exec');
 
 class Repository {
@@ -8,14 +9,28 @@ class Repository {
   }
 }
 
+const repositoriesDir = path.join(__dirname, `../../repositories`);
+
 const urls = [
-  'https://github.com/dashevo/dapi.git'
-]
+  'https://github.com/dashevo/dapi.git',
+  'https://github.com/dashevo/dapi-grpc.git',
+  'https://github.com/dashevo/dashmate.git',
+  'https://github.com/dashevo/js-abci.git',
+  'https://github.com/dashevo/js-dapi-client.git',
+  'https://github.com/dashevo/js-dash-sdk.git',
+  'https://github.com/dashevo/js-drive.git',
+  'https://github.com/dashevo/js-dpp.git',
+  'https://github.com/dashevo/js-grpc-common.git',
+  'https://github.com/dashevo/dpns-contract.git',
+  'https://github.com/dashevo/feature-flags-contract.git',
+  'https://github.com/dashevo/platform-test-suite.git',
+  'https://github.com/dashevo/wallet-lib.git',
+];
 
 const repos = urls.map(url => {
   const repo = new Repository(url);
   repo.name = url.replace(/.*\/dashevo\//, '').replace(/\.git.*/, '');
-  repo.path = `../repositories/${repo.name}`;
+  repo.path = path.join(repositoriesDir, `/${repo.name}`);
   return repo;
 })
 
@@ -29,27 +44,27 @@ module.exports = {
     console.log('Repositories cloned');
   },
 
-  async import() {
+  async import(projectPath) {
     console.log('Importing repositories to packages directory');
-    const responses = await Promise.all(repos.map(repo => {
+    for (let repo of repos) {
+      // It has to be sequential, hence the loop
       console.log(`Importing ${repo.name} from ${repo.path}`);
-      return exec(`lerna import ${repo.path} --preserve-commit --flatten`);
-    }));
-    console.log(responses);
+      await exec(
+        `lerna import ${repo.path} --preserve-commit --flatten -y`,
+        { cwd: projectPath, forwardStdout: true }
+      );
+      console.log(`Imported ${repo.name}`);
+    }
     console.log('Import finished')
   },
 
   async cleanup() {
-
+    console.log(`Removing ${repositoriesDir} if exists`);
+    return exec(`rm -rf ${repositoriesDir}`);
   },
 
   async revert() {
-    console.log('Aborting repository changes');
-    const res = await Promise.all(repos.map(repo => {
-      console.log(`Removing ${repo.path}`);
-      return exec(`rm -rf ${repo.path}`);
-    }));
-    console.log(res);
+    await this.cleanup();
   }
 }
 

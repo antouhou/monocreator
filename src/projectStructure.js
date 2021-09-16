@@ -22,7 +22,7 @@ async function copyTemplates() {
 
 async function installNodeModules() {
   console.log(`Installing node modules in ${projectPath}`);
-  await exec(`npm i`, { cwd: projectPath });
+  await exec(`npm i`, { cwd: projectPath, forwardStdout: true });
 }
 
 async function initializeGit() {
@@ -40,6 +40,11 @@ async function removeProjectDir() {
   await exec(`rm -rf ${projectPath}`);
 }
 
+async function build() {
+  console.log('Running the build scripts');
+  await exec(`npm run build`, { cwd: projectPath, forwardStdout: true });
+}
+
 module.exports = {
   createDirectory,
   copyTemplates,
@@ -47,5 +52,6 @@ module.exports = {
   initializeGit,
   commitFiles,
   removeProjectDir,
-  getPath
+  getPath,
+  build
 }
