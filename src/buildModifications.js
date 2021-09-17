@@ -145,9 +145,25 @@ async function fixDashmateDockerCompose() {
   fs.writeFileSync(dockerComposeDrivePath + '.old', dockerComposeDriveFile);
 }
 
-// Those two seems to be working so far
-async function fixGrpcCommonBuild() {}
-async function fixDapiGrpcBuild() {}
+async function fixDapiGrpcBuild() {
+  const oldImageName = 'grpcweb/common';
+  const newImageName = 'dashpay/grpc-web-common';
+
+  console.log('Fixing dapi-grpc scripts/build.sh script');
+  const buildScriptPath = `${packagesPath}/dapi-grpc/scripts/build.sh`;
+  const buildScriptFile = fs.readFileSync(buildScriptPath, { encoding: "utf-8" });
+  let newFile = buildScriptFile;
+
+  // There are two occurrences
+  for (let i = 0; i < 2; i++) {
+    newFile = newFile
+      .replace(oldImageName, newImageName)
+      .replace('$PWD/node_modules/protobufjs/bin/', '');
+  }
+
+  fs.writeFileSync(buildScriptPath, newFile);
+  fs.writeFileSync(buildScriptPath + '.old', buildScriptFile);
+}
 
 module.exports = {
   init(pathToProject) {
@@ -157,7 +173,6 @@ module.exports = {
   fixSDKBuild,
   fixDapiDockerfile,
   fixDriveDockerfile,
-  fixGrpcCommonBuild,
   fixDashmateDockerCompose,
   fixDapiGrpcBuild,
 }

@@ -44,6 +44,7 @@ async function main() {
   // By that point the repository has been initialized, can do modifications to build files
 
   await buildModifications.fixSDKBuild();
+  await buildModifications.fixDapiGrpcBuild();
 
   // Fixing docker-related stuff in dapi, drive and dashmate
   await buildModifications.fixDapiDockerfile();
