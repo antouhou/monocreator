@@ -55,7 +55,23 @@ module.exports = {
       );
       console.log(`Imported ${repo.name}`);
     }
-    console.log('Import finished')
+    console.log('Import finished');
+  },
+
+  async convertLinks(projectPath) {
+    console.log('Converting commit message issue links');
+    for (let repo of repos) {
+      console.log(`Converting for ${repo.name}`);
+      await exec(
+        `git filter-repo --source ${repo.path} --target ${repo.path} --message-callback "
+          if b'(#' in message:
+            message = message.replace(b'(#', b'(dashevo/${repo.name}#')
+          return message"`,
+        { cwd: projectPath, forwardStdout: true }
+      );
+      console.log(`Converted ${repo.name}`);
+    }
+    console.log('Converting finished');
   },
 
   async cleanup() {
