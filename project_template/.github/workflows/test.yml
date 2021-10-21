@@ -37,7 +37,7 @@ jobs:
         run: npm install -g packster
 
       - name: Run Packster
-        run: packster check ${{ inputs.package }} --error
+        run: packster check --all --error
 
       - name: Run ESLinter
         run: npm run lint -w ${{ inputs.package }}
