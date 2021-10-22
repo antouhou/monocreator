@@ -25,6 +25,7 @@ const urls = [
   'https://github.com/dashevo/feature-flags-contract.git',
   'https://github.com/dashevo/platform-test-suite.git',
   'https://github.com/dashevo/wallet-lib.git',
+  'https://github.com/dashevo/dashpay-contract',
 ];
 
 const repos = urls.map(url => {
