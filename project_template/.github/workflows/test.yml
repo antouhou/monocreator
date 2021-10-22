@@ -47,4 +47,6 @@ jobs:
         run: echo "::set-output name=dependants::$(packster list ${{ inputs.package }} --json)"
 
       - name: Run tests on packages
-        run: ./scripts/run_tests.sh '${{ steps.packster.outputs.dependants }}'
+        run: |
+          ./scripts/configure_dotenv.sh
+          ./scripts/run_tests.sh '${{ steps.packster.outputs.dependants }}'
