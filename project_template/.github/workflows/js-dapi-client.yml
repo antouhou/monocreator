@@ -1,0 +1,23 @@
+name: JS DAPI Client Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 */160 * * *'
+  release:
+    types:
+      - published
+  pull_request:
+    branches:
+      - master
+      - v[0-9]+\.[0-9]+-dev
+    paths:
+      - packages/js-dapi-client/**
+      - .github/workflows/js-dapi-client.yml
+
+jobs:
+  js-dapi-client-tests:
+    name: Run JS DAPI Client tests
+    uses: strophy/monoproject/.github/workflows/test.yml@master
+    with:
+      package: '@dashevo/dapi-client'

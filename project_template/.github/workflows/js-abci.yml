@@ -1,0 +1,23 @@
+name: JS ABCI Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 */160 * * *'
+  release:
+    types:
+      - published
+  pull_request:
+    branches:
+      - master
+      - v[0-9]+\.[0-9]+-dev
+    paths:
+      - packages/js-abci/**
+      - .github/workflows/js-abci.yml
+
+jobs:
+  js-abci-tests:
+    name: Run JS ABCI tests
+    uses: strophy/monoproject/.github/workflows/test.yml@master
+    with:
+      package: '@dashevo/abci'
