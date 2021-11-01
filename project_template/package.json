@@ -13,14 +13,28 @@
     "clean": "npm run clean:data && npm run clean:build && npm run build",
     "start": "./packages/dashmate/bin/dashmate group:start --wait-for-readiness --verbose",
     "stop": "./packages/dashmate/bin/dashmate group:stop",
+    "test": "npm run test --workspaces --if-present",
     "test:suite": "npm run start && npm run test --workspace=@dashevo/platform-test-suite ; npm run stop",
     "setup_and_test": "npm run setup && npm run test:suite",
-    "build": "npm run build -w @dashevo/dapi-grpc -w @dashevo/abci -w @dashevo/dpp -w @dashevo/dapi-client -w @dashevo/wallet-lib -w dash"
+    "build": "npm run build --workspaces --if-present"
   },
   "devDependencies": {
     "lerna": "3.22.1"
   },
   "workspaces": [
-    "packages/*"
+    "packages/js-grpc-common",
+    "packages/dapi-grpc",
+    "packages/js-abci",
+    "packages/js-dpp",
+    "packages/dashpay-contract",
+    "packages/dpns-contract",
+    "packages/feature-flags-contract",
+    "packages/js-dapi-client",
+    "packages/wallet-lib",
+    "packages/js-dash-sdk",
+    "packages/dapi",
+    "packages/drive",
+    "packages/dashmate",
+    "packages/platform-test-suite"
   ]
 }
