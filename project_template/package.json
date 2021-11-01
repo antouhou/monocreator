@@ -33,7 +33,7 @@
     "packages/wallet-lib",
     "packages/js-dash-sdk",
     "packages/dapi",
-    "packages/drive",
+    "packages/js-drive",
     "packages/dashmate",
     "packages/platform-test-suite"
   ]
