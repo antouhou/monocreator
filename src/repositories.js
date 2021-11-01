@@ -2,36 +2,45 @@ const path = require('path');
 const exec = require('./exec');
 
 class Repository {
-  constructor(url, name, path) {
+  constructor(url, name, path, branch) {
     this.url = url;
     this.name = name;
     this.path = path;
+    this.branch = branch;
   }
 }
 
 const repositoriesDir = path.join(__dirname, `../../repositories`);
 
-const urls = [
-  'https://github.com/dashevo/dapi.git',
-  'https://github.com/dashevo/dapi-grpc.git',
-  'https://github.com/dashevo/dashmate.git',
-  'https://github.com/dashevo/js-abci.git',
-  'https://github.com/dashevo/js-dapi-client.git',
-  'https://github.com/dashevo/js-dash-sdk.git',
-  'https://github.com/dashevo/js-drive.git',
-  'https://github.com/dashevo/js-dpp.git',
-  'https://github.com/dashevo/js-grpc-common.git',
-  'https://github.com/dashevo/dpns-contract.git',
-  'https://github.com/dashevo/feature-flags-contract.git',
-  'https://github.com/dashevo/platform-test-suite.git',
-  'https://github.com/dashevo/wallet-lib.git',
-  'https://github.com/dashevo/dashpay-contract',
+function repoInfo(path, branch) {
+  return {
+    url: path,
+    branch: branch
+  }
+}
+
+const urlsAndBranches = [
+  repoInfo('https://github.com/dashevo/dapi.git', 'v0.21-dev'),
+  repoInfo('https://github.com/dashevo/dapi-grpc.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/dashmate.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/js-abci.git', 'master'),
+  repoInfo('https://github.com/dashevo/js-dapi-client.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/js-dash-sdk.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/js-drive.git', 'v0.21-dev'),
+  repoInfo('https://github.com/dashevo/js-dpp.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/js-grpc-common.git', 'master'),
+  repoInfo('https://github.com/dashevo/dpns-contract.git', 'master'),
+  repoInfo('https://github.com/dashevo/feature-flags-contract.git', 'master'),
+  repoInfo('https://github.com/dashevo/platform-test-suite.git', 'v0.21-dev'),
+  repoInfo('https://github.com/dashevo/wallet-lib.git', 'v0.22-dev'),
+  repoInfo('https://github.com/dashevo/dashpay-contract', 'master'),
 ];
 
-const repos = urls.map(url => {
-  const repo = new Repository(url);
-  repo.name = url.replace(/.*\/dashevo\//, '').replace(/\.git.*/, '');
+const repos = urlsAndBranches.map(repoInfo => {
+  const repo = new Repository(repoInfo.url);
+  repo.name = repoInfo.url.replace(/.*\/dashevo\//, '').replace(/\.git.*/, '');
   repo.path = path.join(repositoriesDir, `/${repo.name}`);
+  repo.branch = repoInfo.branch;
   return repo;
 })
 
@@ -40,7 +49,7 @@ module.exports = {
     console.log('Cloning repositories...');
     const responses = await Promise.all(repos.map(repo => {
       console.log(`Clone ${repo.url} into ${repo.path}`);
-      return exec(`git clone ${repo.url} ${repo.path}`);
+      return exec(`git clone --branch ${repo.branch} ${repo.url} ${repo.path}`);
     }));
     console.log('Repositories cloned');
   },
