@@ -38,5 +38,5 @@
     "packages/js-drive",
     "packages/dashmate",
     "packages/platform-test-suite"
-  ],
+  ]
 }
