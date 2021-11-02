@@ -12,34 +12,34 @@ class Repository {
 
 const repositoriesDir = path.join(__dirname, `../../repositories`);
 
-function repoInfo(path, branch) {
+function repoInfo(url, branch, dir) {
   return {
-    url: path,
-    branch: branch
+    url,
+    branch,
+    dir,
   }
 }
 
 const urlsAndBranches = [
-  repoInfo('https://github.com/dashevo/dapi.git', 'v0.21-dev'),
-  repoInfo('https://github.com/dashevo/dapi-grpc.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/dashmate.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/js-abci.git', 'master'),
-  repoInfo('https://github.com/dashevo/js-dapi-client.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/js-dash-sdk.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/js-drive.git', 'v0.21-dev'),
-  repoInfo('https://github.com/dashevo/js-dpp.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/js-grpc-common.git', 'master'),
-  repoInfo('https://github.com/dashevo/dpns-contract.git', 'master'),
-  repoInfo('https://github.com/dashevo/feature-flags-contract.git', 'master'),
-  repoInfo('https://github.com/dashevo/platform-test-suite.git', 'v0.21-dev'),
-  repoInfo('https://github.com/dashevo/wallet-lib.git', 'v0.22-dev'),
-  repoInfo('https://github.com/dashevo/dashpay-contract', 'master'),
+  repoInfo('https://github.com/dashevo/dapi.git', 'v0.22-dev', 'dapi'),
+  repoInfo('https://github.com/dashevo/dapi-grpc.git', 'v0.22-dev', 'dapi-grpc'),
+  repoInfo('https://github.com/dashevo/dashmate.git', 'v0.22-dev', 'dashmate'),
+  repoInfo('https://github.com/dashevo/js-dapi-client.git', 'v0.22-dev', 'dapi-client'),
+  repoInfo('https://github.com/dashevo/js-dash-sdk.git', 'v0.22-dev', 'sdk'),
+  repoInfo('https://github.com/dashevo/js-drive.git', 'v0.22-dev', 'drive'),
+  repoInfo('https://github.com/dashevo/js-dpp.git', 'v0.22-dev', 'dpp'),
+  repoInfo('https://github.com/dashevo/js-grpc-common.git', 'master', 'grpc-common'),
+  repoInfo('https://github.com/dashevo/dpns-contract.git', 'master', 'dpns-contract'),
+  repoInfo('https://github.com/dashevo/feature-flags-contract.git', 'master', 'feature-flags-contract'),
+  repoInfo('https://github.com/dashevo/platform-test-suite.git', 'v0.22-dev', 'test-suite'),
+  repoInfo('https://github.com/dashevo/wallet-lib.git', 'v0.22-dev', 'wallet-lib'),
+  repoInfo('https://github.com/dashevo/dashpay-contract', 'master', 'dashpay-contract'),
 ];
 
 const repos = urlsAndBranches.map(repoInfo => {
   const repo = new Repository(repoInfo.url);
   repo.name = repoInfo.url.replace(/.*\/dashevo\//, '').replace(/\.git.*/, '');
-  repo.path = path.join(repositoriesDir, `/${repo.name}`);
+  repo.path = path.join(repositoriesDir, `/${repo.dir}`);
   repo.branch = repoInfo.branch;
   return repo;
 })
