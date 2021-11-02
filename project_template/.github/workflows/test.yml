@@ -1,12 +1,13 @@
 name: Package Tests
 
 on:
-  workflow_call:
-    inputs:
-      package:
-        description: The calling package
-        type: string
-        default: .
+  release:
+    types:
+      - published
+  pull_request:
+    branches:
+      - master
+      - v[0-9]+\.[0-9]+-dev
 
 jobs:
   test:
@@ -30,8 +31,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install NPM dependencies
-        run: npm ci
+      - name: Set up the network
+        run: npm run setup
 
       - name: Install Packster
         run: npm install -g packster
@@ -40,7 +41,7 @@ jobs:
         run: packster check --all --error
 
       - name: Run ESLinter
-        run: npm run lint -w ${{ inputs.package }}
+        run: npm run lint
 
       - name: Get list of packages to test
         id: packster
@@ -49,4 +50,4 @@ jobs:
       - name: Run tests on packages
         run: |
           ./scripts/configure_dotenv.sh
-          ./scripts/run_tests.sh '${{ steps.packster.outputs.dependants }}'
+          npm run test

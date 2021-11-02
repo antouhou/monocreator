@@ -35,6 +35,9 @@ jobs:
       - name: Install NPM dependencies
         run: npm ci
 
+      - name: Build packages
+        run: npm run build
+
       - name: Set release tag
         uses: actions/github-script@v5
         id: tag
@@ -107,6 +110,9 @@ jobs:
           flavor: |
             latest=${{ !contains(github.event.release.tag_name, '-dev') }}
             suffix=${{ steps.suffix.outputs.result }}
+
+      - name: Build packages
+        run: npm run build
 
       - name: Build and push Docker image for DAPI
         id: dapi_docker_build

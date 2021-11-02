@@ -1,8 +1,11 @@
 {
-  "name": "dash-platform",
+  "name": "js-dash-platform",
   "private": true,
   "scripts": {
     "setup": "npm ci && npm run build && npm run clean:data && npm run configure && npm run stop",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "packster run test --except @dashevo/platform-test-suite",
     "configure:dashmate": "./scripts/configure_dashmate.sh",
     "configure:network": "./scripts/setup_local_network.sh",
     "configure:tests": "./packages/dashmate/bin/configure_test_suite.sh",
@@ -13,13 +16,12 @@
     "clean": "npm run clean:data && npm run clean:build && npm run build",
     "start": "./packages/dashmate/bin/dashmate group:start --wait-for-readiness --verbose",
     "stop": "./packages/dashmate/bin/dashmate group:stop",
-    "test": "npm run test --workspaces --if-present",
     "test:suite": "npm run start && npm run test --workspace=@dashevo/platform-test-suite ; npm run stop",
-    "setup_and_test": "npm run setup && npm run test:suite",
-    "build": "npm run build --workspaces --if-present"
+    "setup_and_test": "npm run setup && npm run test:suite"
   },
   "devDependencies": {
-    "lerna": "3.22.1"
+    "lerna": "3.22.1",
+    "packster": "~0.3.0"
   },
   "workspaces": [
     "packages/js-grpc-common",
@@ -36,5 +38,5 @@
     "packages/js-drive",
     "packages/dashmate",
     "packages/platform-test-suite"
-  ]
+  ],
 }
