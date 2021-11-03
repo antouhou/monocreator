@@ -6,8 +6,8 @@ async function prepareRepositories(projectPath) {
   try {
     await repositories.cleanup();
     await repositories.clone();
-    await repositories.import(projectPath);
     await repositories.convertLinks(projectPath);
+    await repositories.import(projectPath);
     await repositories.cleanup();
   } catch (e) {
     console.log('Error happened while preparing repositories, reverting');
